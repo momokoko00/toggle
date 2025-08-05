@@ -1,10 +1,20 @@
 async function checkSiteVisibility() {
-  const response = await fetch('https://cdn.jsdelivr.net/gh/momokoko00/toggle@main/config.json?cachebust=' + Date.now());
-  const config = await response.json();
-  if (config.visible !== 'yes') {
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/momokoko00/toggle/main/config.json?cachebust=${Date.now()}`);
+    if (!response.ok) {
+      document.body.innerHTML = '';
+      return;
+    }
+
+    const config = await response.json();
+    if ((config.visible || '').toLowerCase() === 'yes') {
+      document.body.style.setProperty('display', 'block', 'important');
+    } else {
+      document.body.innerHTML = '';
+    }
+  } catch (e) {
     document.body.innerHTML = '';
-  } else {
-    document.body.setAttribute('style', 'display: block !important');
   }
 }
+
 window.addEventListener('load', checkSiteVisibility);
