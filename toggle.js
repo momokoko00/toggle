@@ -1,21 +1,25 @@
+console.log('Script is running!');
 async function checkSiteVisibility() {
   try {
-    // Fetch the config from the same GitHub repo
+    console.log('Fetching config from: https://raw.githubusercontent.com/momokoko00/toggle/main/config.json');
     const response = await fetch('https://raw.githubusercontent.com/momokoko00/toggle/main/config.json?cachebust=${Date.now()}');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const config = await response.json();
+    console.log('Config fetched:', config);
 
-    // Check the visibility setting
     if (config.visible === 'yes') {
-      document.body.style.display = 'block';
+      console.log('Showing body');
+      document.body.setAttribute('style', 'display: block !important');
     } else {
-      document.body.style.display = 'none';
+      console.log('Hiding body');
+      document.body.setAttribute('style', 'display: none !important');
     }
   } catch (error) {
     console.error('Error fetching visibility config:', error);
-    // Default to hiding the body if there's an error
-    document.body.style.display = 'none';
+    document.body.setAttribute('style', 'display: none !important');
   }
 }
 
-// Run the function when the page loads
 window.addEventListener('load', checkSiteVisibility);
